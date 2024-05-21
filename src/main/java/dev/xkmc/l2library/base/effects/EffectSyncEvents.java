@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -41,25 +41,25 @@ public class EffectSyncEvents {
 	}
 
 	@SubscribeEvent
-	public static void onPotionAddedEvent(MobEffectEvent.Added event) {
-		if (TRACKED.contains(event.getEffectInstance().getEffect())) {
-			onEffectAppear(event.getEffectInstance().getEffect(), event.getEntity(), event.getEffectInstance().getAmplifier());
+	public static void onPotionAddedEvent(PotionEvent.PotionAddedEvent event) {
+		if (TRACKED.contains(event.getPotionEffect().getEffect())) {
+			onEffectAppear(event.getPotionEffect().getEffect(), event.getEntityLiving(), event.getPotionEffect().getAmplifier());
 		}
 	}
 
 
 	@SubscribeEvent
-	public static void onPotionRemoveEvent(MobEffectEvent.Remove event) {
-		if (event.getEffectInstance() != null && TRACKED.contains(event.getEffectInstance().getEffect())) {
-			onEffectDisappear(event.getEffectInstance().getEffect(), event.getEntity());
+	public static void onPotionRemoveEvent(PotionEvent.PotionRemoveEvent event) {
+		if (event.getPotionEffect() != null && TRACKED.contains(event.getPotionEffect().getEffect())) {
+			onEffectDisappear(event.getPotionEffect().getEffect(), event.getEntityLiving());
 		}
 	}
 
 
 	@SubscribeEvent
-	public static void onPotionExpiryEvent(MobEffectEvent.Expired event) {
-		if (event.getEffectInstance() != null && TRACKED.contains(event.getEffectInstance().getEffect())) {
-			onEffectDisappear(event.getEffectInstance().getEffect(), event.getEntity());
+	public static void onPotionExpiryEvent(PotionEvent.PotionExpiryEvent event) {
+		if (event.getPotionEffect() != null && TRACKED.contains(event.getPotionEffect().getEffect())) {
+			onEffectDisappear(event.getPotionEffect().getEffect(), event.getEntityLiving());
 		}
 	}
 

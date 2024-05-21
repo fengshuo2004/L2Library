@@ -51,7 +51,7 @@ public class AttackCache {
 	void pushPlayer(AttackEntityEvent event) {
 		stage = Stage.PLAYER_ATTACK;
 		player = event;
-		strength = event.getEntity().getAttackStrengthScale(1);
+		strength = event.getPlayer().getAttackStrengthScale(1);
 		target = resolve(event.getTarget());
 		AttackEventHandler.LISTENERS.forEach(e -> e.onPlayerAttack(this));
 	}
@@ -66,7 +66,7 @@ public class AttackCache {
 	void pushAttackPre(LivingAttackEvent event) {
 		stage = Stage.HURT_PRE;
 		attack = event;
-		target = attack.getEntity();
+		target = attack.getEntityLiving();
 		damage_pre = event.getAmount();
 		AttackEventHandler.LISTENERS.forEach(e -> e.onAttack(this, weapon));
 	}

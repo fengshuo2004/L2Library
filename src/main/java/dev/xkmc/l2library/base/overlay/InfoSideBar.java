@@ -3,19 +3,19 @@ package dev.xkmc.l2library.base.overlay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.xkmc.l2library.init.L2LibraryConfig;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
 
 import java.util.List;
 
-public abstract class InfoSideBar extends SideBar implements IGuiOverlay {
+public abstract class InfoSideBar extends SideBar implements IIngameOverlay {
 
 	public InfoSideBar(float duration, float ease) {
 		super(duration, ease);
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
 		if (!ease(gui.getGuiTicks() + partialTick))
 			return;
 		var text = getText();

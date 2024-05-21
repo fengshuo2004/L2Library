@@ -10,15 +10,18 @@ import dev.xkmc.l2library.base.tabs.contents.AttributeEntry;
 import dev.xkmc.l2library.capability.player.PlayerCapToClient;
 import dev.xkmc.l2library.capability.player.PlayerCapabilityEvents;
 import dev.xkmc.l2library.capability.player.PlayerCapabilityHolder;
-import dev.xkmc.l2library.idea.infmaze.worldgen.MazeDimension;
+import dev.xkmc.l2library.idea.infmaze.worldgen.MazeChunkGenerator;
 import dev.xkmc.l2library.init.events.attack.AttackEventHandler;
 import dev.xkmc.l2library.init.events.GenericEventHandler;
 import dev.xkmc.l2library.serial.handler.Handlers;
 import dev.xkmc.l2library.serial.network.PacketHandler;
 import dev.xkmc.l2library.serial.network.SyncPacket;
 import dev.xkmc.l2library.util.raytrace.TargetSetPacket;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,10 +32,12 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.event.RegistryEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mojang.serialization.Codec;
 
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
@@ -50,11 +55,14 @@ public class L2Library {
 			e -> e.create(PlayerCapToClient.class, PLAY_TO_CLIENT),
 			e -> e.create(TargetSetPacket.class, PLAY_TO_SERVER));
 
+	private static final DeferredRegister<Codec<? extends ChunkGenerator>> CODEC_CHUNK_GENERATOR =
+		DeferredRegister.create(Registry.CHUNK_GENERATOR_REGISTRY, MODID);
+
 	public L2Library() {
 		Handlers.register();
 		FMLJavaModLoadingContext ctx = FMLJavaModLoadingContext.get();
 		IEventBus bus = ctx.getModEventBus();
-		bus.addListener(MazeDimension::register);
+		CODEC_CHUNK_GENERATOR.register("maze_chunkgen", () -> MazeChunkGenerator.CODEC);
 		MinecraftForge.EVENT_BUS.register(GenericEventHandler.class);
 		MinecraftForge.EVENT_BUS.register(EffectSyncEvents.class);
 		MinecraftForge.EVENT_BUS.register(PlayerCapabilityEvents.class);
@@ -63,7 +71,7 @@ public class L2Library {
 		bus.addListener(L2Library::registerCaps);
 		bus.addListener(PacketHandler::setup);
 		bus.addListener(L2Library::setup);
-		bus.addListener(L2Library::registerRecipeSerializers);
+		bus.addGenericListener(RecipeSerializer.class, L2Library::registerRecipeSerializers);
 		L2LibraryConfig.init();
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> L2Client.onCtorClient(bus, MinecraftForge.EVENT_BUS));
 	}
@@ -89,12 +97,10 @@ public class L2Library {
 		});
 	}
 
-	public static void registerRecipeSerializers(RegisterEvent event) {
-		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
-			CraftingHelper.register(EnchantmentIngredient.INSTANCE.id(), EnchantmentIngredient.INSTANCE);
-			CraftingHelper.register(PotionIngredient.INSTANCE.id(), PotionIngredient.INSTANCE);
-			CraftingHelper.register(MobEffectIngredient.INSTANCE.id(), MobEffectIngredient.INSTANCE);
-		}
+	public static void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
+		CraftingHelper.register(EnchantmentIngredient.INSTANCE.id(), EnchantmentIngredient.INSTANCE);
+		CraftingHelper.register(PotionIngredient.INSTANCE.id(), PotionIngredient.INSTANCE);
+		CraftingHelper.register(MobEffectIngredient.INSTANCE.id(), MobEffectIngredient.INSTANCE);
 	}
 
 }

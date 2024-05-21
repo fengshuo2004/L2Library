@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +55,12 @@ public class TabManager {
 
 		if (TabRegistry.getTabs().size() > TabType.MAX_TABS) {
 			adder.accept(new Button(guiLeft, guiTop - 50, 20, 20,
-					Component.literal("<"), b -> {
+			new TextComponent("<"), b -> {
 				tabPage = Math.max(tabPage - 1, 0);
 				updateVisibility();
 			}));
 			adder.accept(new Button(guiLeft + 252 - 20, guiTop - 50, 20, 20,
-					Component.literal(">"), b -> {
+			new TextComponent(">"), b -> {
 				tabPage = Math.min(tabPage + 1, maxPages);
 				updateVisibility();
 			}));

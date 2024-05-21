@@ -1,15 +1,16 @@
 package dev.xkmc.l2library.base;
 
 import dev.xkmc.l2library.util.code.Wrappers;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class NamedEntry<T extends NamedEntry<T>> {
+public class NamedEntry<T extends NamedEntry<T>> implements IForgeRegistryEntry<T> {
 
 	private final L2Registrate.RegistryInstance<T> registry;
 
@@ -29,7 +30,7 @@ public class NamedEntry<T extends NamedEntry<T>> {
 	}
 
 	public MutableComponent getDesc() {
-		return Component.translatable(getDescriptionId());
+		return new TranslatableComponent(getDescriptionId());
 	}
 
 	public ResourceLocation getRegistryName() {
@@ -44,4 +45,13 @@ public class NamedEntry<T extends NamedEntry<T>> {
 		return Wrappers.cast(this);
 	}
 
+	public T setRegistryName(ResourceLocation name){
+		// we should never get here
+		throw new IllegalStateException("Attempted to set registry name on NamedEntry!");
+	}
+
+	public Class<T> getRegistryType(){
+		// implementation is required :-(
+		return registry.get().getRegistrySuperType();
+	}
 }

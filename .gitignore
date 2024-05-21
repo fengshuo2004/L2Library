@@ -27,3 +27,6 @@ build
 run
 
 .DS_Store
+
+# visual studio code
+.vscode

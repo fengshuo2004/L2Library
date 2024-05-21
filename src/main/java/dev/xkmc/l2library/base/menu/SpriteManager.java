@@ -132,7 +132,7 @@ public class SpriteManager {
 		JsonObject jo = DistExecutor.unsafeRunForDist(() -> () ->
 				Wrappers.get(() -> GsonHelper.parse(new InputStreamReader(Minecraft.getInstance().getResourceManager().getResource(
 						new ResourceLocation(coords.getNamespace(), "textures/gui/coords/" + coords.getPath() + ".json")
-				).get().open())).getAsJsonObject()), () -> () -> CACHE.get(coords).getAsJsonObject());
+				).getInputStream())).getAsJsonObject()), () -> () -> CACHE.get(coords).getAsJsonObject());
 		JsonCodec.from(jo, SpriteManager.class, this);
 		loaded = true;
 	}

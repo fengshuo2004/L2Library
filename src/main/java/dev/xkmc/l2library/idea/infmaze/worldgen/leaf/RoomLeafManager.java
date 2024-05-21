@@ -4,7 +4,6 @@ import dev.xkmc.l2library.idea.infmaze.dim3d.MazeCell3D;
 import dev.xkmc.l2library.idea.infmaze.init.CellContent;
 import dev.xkmc.l2library.idea.infmaze.init.LeafManager;
 import dev.xkmc.l2library.util.math.MathHelper;
-import net.minecraft.world.level.levelgen.RandomState;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -24,7 +23,7 @@ public class RoomLeafManager implements LeafManager {
 	}
 
 	@Override
-	public void decoratePath(RandomState random, MazeCell3D cell) {
+	public void decoratePath(MazeCell3D cell) {
 
 	}
 

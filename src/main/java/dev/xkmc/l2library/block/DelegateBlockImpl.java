@@ -1,5 +1,7 @@
 package dev.xkmc.l2library.block;
 
+import java.util.Random;
+
 import dev.xkmc.l2library.block.mult.*;
 import dev.xkmc.l2library.block.one.*;
 import dev.xkmc.l2library.block.type.BlockMethod;
@@ -7,7 +9,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -151,18 +152,18 @@ public class DelegateBlockImpl extends DelegateBlock {
 	}
 
 	@Override
-	public final void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+	public final void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		impl.forEach(RandomTickBlockMethod.class, e -> e.randomTick(state, world, pos, random));
 	}
 
 	@Override
-	public final void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+	public final void tick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
 		impl.forEach(ScheduleTickBlockMethod.class, e -> e.tick(state, world, pos, random));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public final void animateTick(BlockState state, Level world, BlockPos pos, RandomSource r) {
+	public final void animateTick(BlockState state, Level world, BlockPos pos, Random r) {
 		impl.forEach(AnimateTickBlockMethod.class, e -> e.animateTick(state, world, pos, r));
 	}
 

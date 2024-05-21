@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class OverlayUtils extends GuiComponent {
 	 * row height: 10
 	 * row spacing: 2
 	 */
-	public void renderLongText(ForgeGui gui, PoseStack stack, int x0, int y0, int maxWidth, List<Component> list) {
+	public void renderLongText(ForgeIngameGui gui, PoseStack stack, int x0, int y0, int maxWidth, List<Component> list) {
 		Font font = gui.getFont();
 		int tooltipTextWidth = list.stream().mapToInt(font::width).max().orElse(0);
 		if (maxWidth < 0) maxWidth = getMaxWidth();
@@ -78,7 +78,8 @@ public class OverlayUtils extends GuiComponent {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableDepthTest();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		bufferbuilder.end();
+		BufferUploader.end(bufferbuilder);
 		RenderSystem.enableTexture();
 		for (FormattedCharSequence text : ans) {
 			font.draw(stack, text, x0, y0, tc);
@@ -88,7 +89,7 @@ public class OverlayUtils extends GuiComponent {
 		RenderSystem.disableBlend();
 	}
 
-	public void renderLongText(ForgeGui gui, PoseStack stack, List<Component> list) {
+	public void renderLongText(ForgeIngameGui gui, PoseStack stack, List<Component> list) {
 		renderLongText(gui, stack, -1, -1, -1, list);
 	}
 
@@ -106,7 +107,8 @@ public class OverlayUtils extends GuiComponent {
 		builder.vertex(x, y + h, 0.0D).color(r, g, b, a).endVertex();
 		builder.vertex(x + w, y + h, 0.0D).color(r, g, b, a).endVertex();
 		builder.vertex(x + w, y, 0.0D).color(r, g, b, a).endVertex();
-		BufferUploader.drawWithShader(builder.end());
+		builder.end();
+		BufferUploader.end(builder);
 	}
 
 }

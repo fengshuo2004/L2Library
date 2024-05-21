@@ -1,8 +1,10 @@
 package dev.xkmc.l2library.serial.network;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import dev.xkmc.l2library.serial.codec.JsonCodec;
-import net.minecraft.data.CachedOutput;
+import net.minecraft.data.HashCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 
@@ -15,6 +17,7 @@ public abstract class ConfigDataProvider implements DataProvider {
 
 	private final DataGenerator generator;
 	private final String folder_path, name;
+	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
 
 	private final Map<String, BaseConfig> map = new HashMap<>();
 
@@ -27,14 +30,14 @@ public abstract class ConfigDataProvider implements DataProvider {
 	public abstract void add(Map<String, BaseConfig> map);
 
 	@Override
-	public void run(CachedOutput cache) {
+	public void run(HashCache cache) {
 		Path folder = generator.getOutputFolder();
 		add(map);
 		map.forEach((k, v) -> {
 			try {
 				JsonElement elem = JsonCodec.toJson(v, BaseConfig.class);
 				Path path = folder.resolve(folder_path + k + ".json");
-				DataProvider.saveStable(cache, elem, path);
+				DataProvider.save(GSON, cache, elem, path);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -7,6 +7,8 @@ import dev.xkmc.l2library.util.Proxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -40,10 +42,10 @@ public class AttributeScreen extends BaseTextScreen {
 		Attribute focus = null;
 		for (AttributeEntry entry : AttributeEntry.LIST) {
 			double val = player.getAttributeValue(entry.sup().get());
-			Component comp = Component.translatable(
+			Component comp = new TranslatableComponent(
 					"attribute.modifier.equals." + (entry.usePercent() ? 1 : 0),
 					ATTRIBUTE_MODIFIER_FORMAT.format(entry.usePercent() ? val * 100 : val),
-					Component.translatable(entry.sup().get().getDescriptionId()));
+					new TranslatableComponent(entry.sup().get().getDescriptionId()));
 			this.font.draw(stack, comp, x, y, 0);
 			if (mx > x && my > y && my < y + 10) focus = entry.sup().get();
 			y += 10;
@@ -69,47 +71,47 @@ public class AttributeScreen extends BaseTextScreen {
 		for (var e : m1s) m1v *= 1 + e.getAmount();
 		double total = (base + addv) * (1 + m0v) * m1v;
 		List<Component> ans = new ArrayList<>();
-		ans.add(Component.translatable(attr.getDescriptionId()).withStyle(ChatFormatting.GOLD));
+		ans.add(new TranslatableComponent(attr.getDescriptionId()).withStyle(ChatFormatting.GOLD));
 		boolean shift = Screen.hasShiftDown();
-		ans.add(Component.translatable("menu.tabs.attribute.base", number("%s", base)).withStyle(ChatFormatting.BLUE));
-		ans.add(Component.translatable("menu.tabs.attribute.add", numberSigned("%s", addv)).withStyle(ChatFormatting.BLUE));
+		ans.add(new TranslatableComponent("menu.tabs.attribute.base", number("%s", base)).withStyle(ChatFormatting.BLUE));
+		ans.add(new TranslatableComponent("menu.tabs.attribute.add", numberSigned("%s", addv)).withStyle(ChatFormatting.BLUE));
 		if (shift) {
 			for (var e : adds) {
 				ans.add(numberSigned("%s", e.getAmount()).append(name(e)));
 			}
 		}
-		ans.add(Component.translatable("menu.tabs.attribute.mult_base", numberSigned("%s%%", m0v * 100)).withStyle(ChatFormatting.BLUE));
+		ans.add(new TranslatableComponent("menu.tabs.attribute.mult_base", numberSigned("%s%%", m0v * 100)).withStyle(ChatFormatting.BLUE));
 		if (shift) {
 			for (var e : m0s) {
 				ans.add(numberSigned("%s%%", e.getAmount() * 100).append(name(e)));
 			}
 		}
-		ans.add(Component.translatable("menu.tabs.attribute.mult_all", number("x%s", m1v)).withStyle(ChatFormatting.BLUE));
+		ans.add(new TranslatableComponent("menu.tabs.attribute.mult_all", number("x%s", m1v)).withStyle(ChatFormatting.BLUE));
 		if (shift) {
 			for (var e : m1s) {
 				ans.add(number("x%s", 1 + e.getAmount()).append(name(e)));
 			}
 		}
-		ans.add(Component.translatable("menu.tabs.attribute.format", number("%s", base),
+		ans.add(new TranslatableComponent("menu.tabs.attribute.format", number("%s", base),
 				numberSigned("%s", addv), numberSigned("%s", m0v), number("%s", m1v), number("%s", total)));
-		if (!shift) ans.add(Component.translatable("menu.tabs.attribute.detail").withStyle(ChatFormatting.GRAY));
+		if (!shift) ans.add(new TranslatableComponent("menu.tabs.attribute.detail").withStyle(ChatFormatting.GRAY));
 		return ans;
 	}
 
 	private static MutableComponent number(String base, double value) {
-		return Component.literal(String.format(base, ATTRIBUTE_MODIFIER_FORMAT.format(value))).withStyle(ChatFormatting.GREEN);
+		return new TextComponent(String.format(base, ATTRIBUTE_MODIFIER_FORMAT.format(value))).withStyle(ChatFormatting.GREEN);
 	}
 
 
 	private static MutableComponent numberSigned(String base, double value) {
 		if (value >= 0)
-			return Component.literal(String.format("+" + base, ATTRIBUTE_MODIFIER_FORMAT.format(value))).withStyle(ChatFormatting.GREEN);
-		return Component.literal(String.format("-" + base, ATTRIBUTE_MODIFIER_FORMAT.format(-value))).withStyle(ChatFormatting.RED);
+			return new TextComponent(String.format("+" + base, ATTRIBUTE_MODIFIER_FORMAT.format(value))).withStyle(ChatFormatting.GREEN);
+		return new TextComponent(String.format("-" + base, ATTRIBUTE_MODIFIER_FORMAT.format(-value))).withStyle(ChatFormatting.RED);
 	}
 
 
 	private static MutableComponent name(AttributeModifier e) {
-		return Component.literal("  (" + e.getName() + ")").withStyle(ChatFormatting.DARK_GRAY);
+		return new TextComponent("  (" + e.getName() + ")").withStyle(ChatFormatting.DARK_GRAY);
 	}
 
 }

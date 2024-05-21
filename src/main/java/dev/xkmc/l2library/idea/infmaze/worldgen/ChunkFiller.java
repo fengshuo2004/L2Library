@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.levelgen.RandomState;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,7 +27,7 @@ public class ChunkFiller {
 		this.xzCount = 16 / cellWidth;
 	}
 
-	public void fillChunk(InfiniMaze maze, ChunkPos pos, ChunkAccess access, RandomState random) {
+	public void fillChunk(InfiniMaze maze, ChunkPos pos, ChunkAccess access) {
 		Set<CellPos> complete = new TreeSet<>();
 		for (long y = 0; y < heightInCell; y++) {
 			for (long x = 0; x < xzCount; x++) {
@@ -37,14 +36,14 @@ public class ChunkFiller {
 					long pz = z | (long) pos.z * xzCount;
 					MazeCell3D cell = maze.getCell(new BasePos(px, y, pz)).load();
 					if (complete.contains(cell.pos)) continue;
-					fillCell(cell, pos, access, random);
+					fillCell(cell, pos, access);
 					complete.add(cell.pos);
 				}
 			}
 		}
 	}
 
-	private void fillCell(MazeCell3D cell, ChunkPos pos, ChunkAccess access, RandomState random) {
+	private void fillCell(MazeCell3D cell, ChunkPos pos, ChunkAccess access) {
 		BasePos c0 = new BasePos((long) pos.x << 4, 0, (long) pos.z << 4);
 		BasePos c1 = new BasePos((long) (pos.x + 1) << 4, (long) heightInCell * cellWidth, (long) (pos.z + 1) << 4);
 		BoundBox boxC = new BoundBox(c0, c1);
@@ -59,7 +58,7 @@ public class ChunkFiller {
 			fillWallRecursive(boxC, wall, cell.pos.scale() == 0 ? blocks.wall() : blocks.hard(), access);
 		}
 		if (cell.content != null) {
-			cell.content.generate(random, boxC, access);
+			cell.content.generate(boxC, access);
 		}
 	}
 

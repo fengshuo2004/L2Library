@@ -12,6 +12,7 @@ import dev.xkmc.l2library.serial.handler.RLClassHandler;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -48,18 +49,18 @@ public class L2Registrate extends AbstractRegistrate<L2Registrate> {
 	}
 
 	@SuppressWarnings({"unchecked", "unsafe"})
-	public <E extends NamedEntry<E>> RegistryInstance<E> newRegistry(String id, Class<?> cls) {
-		ResourceKey<Registry<E>> key = makeRegistry(id, () ->
+	public <E extends NamedEntry<E>> RegistryInstance<E> newRegistry(String id, Class<E> cls) {
+		Supplier<IForgeRegistry<E>> sup = makeRegistry(id, cls, () ->
 				new RegistryBuilder<E>().onCreate((r, s) ->
-						new RLClassHandler<>((Class<E>) cls, () -> r)));
-		return new RegistryInstance<>(Suppliers.memoize(() -> RegistryManager.ACTIVE.getRegistry(key)), key);
+						new RLClassHandler<>(cls, () -> r)));
+		return new RegistryInstance<>(sup, ResourceKey.createRegistryKey(new ResourceLocation(getModid(), id)));
 	}
 
 	public <E extends NamedEntry<E>> L2Registrate.RegistryInstance<E> newDatapackRegistry(String id, Class<E> cls, Codec<E> codec) {
-		ResourceKey<Registry<E>> key = this.makeRegistry(id, () ->
+		Supplier<IForgeRegistry<E>> sup = this.makeRegistry(id, cls, () ->
 				new RegistryBuilder<E>().dataPackRegistry(codec)
 						.onCreate((r, s) -> new RLClassHandler<StringTag, E>(cls, () -> r)));
-		return new RegistryInstance<>(Suppliers.memoize(() -> RegistryManager.ACTIVE.getRegistry(key)), key);
+		return new RegistryInstance<>(sup, ResourceKey.createRegistryKey(new ResourceLocation(getModid(), id)));
 	}
 
 

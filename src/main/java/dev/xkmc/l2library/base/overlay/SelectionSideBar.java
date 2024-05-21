@@ -9,12 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
 
 import java.util.List;
 
-public abstract class SelectionSideBar extends SideBar implements IGuiOverlay {
+public abstract class SelectionSideBar extends SideBar implements IIngameOverlay {
 
 	public SelectionSideBar(float duration, float ease) {
 		super(duration, ease);
@@ -31,7 +31,7 @@ public abstract class SelectionSideBar extends SideBar implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+	public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
 		if (!ease(gui.getGuiTicks() + partialTick))
 			return;
 		initRender();
@@ -39,8 +39,8 @@ public abstract class SelectionSideBar extends SideBar implements IGuiOverlay {
 		Pair<List<ItemStack>, Integer> content = getItems();
 		var list = content.getFirst();
 		int selected = content.getSecond();
-		ItemRenderer renderer = gui.getMinecraft().getItemRenderer();
-		Font font = gui.getMinecraft().font;
+		ItemRenderer renderer = gui.minecraft.getItemRenderer();
+		Font font = gui.minecraft.font;
 		int dx = getXOffset(width);
 		int dy = getYOffset(height);
 		boolean shift = Minecraft.getInstance().options.keyShift.isDown();

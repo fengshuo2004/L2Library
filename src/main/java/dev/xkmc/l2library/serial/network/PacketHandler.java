@@ -111,7 +111,7 @@ public class PacketHandler {
 			channel.messageBuilder(type, index++, direction)
 					.encoder(encoder)
 					.decoder(decoder)
-					.consumerMainThread(handler)
+					.consumer(handler)
 					.add();
 		}
 	}

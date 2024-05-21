@@ -9,8 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class RecSerializer<R extends Recipe<I>, I extends Container> implements RecipeSerializer<R> {
+public class RecSerializer<R extends Recipe<I>, I extends Container> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<R> {
 
 	public final Class<R> cls;
 

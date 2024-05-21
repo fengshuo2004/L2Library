@@ -2,16 +2,15 @@ package dev.xkmc.l2library.base.worldgen;
 
 import net.minecraft.core.*;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,22 +38,22 @@ public abstract class EmptyChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void addDebugScreenInfo(List<String> list, RandomState random, BlockPos pos) {
+	public void addDebugScreenInfo(List<String> list, BlockPos pos) {
 
 	}
 
 	@Override
-	public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, RandomState p_223045_, BiomeManager p_223046_, StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
+	public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, BiomeManager p_223046_, StructureFeatureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
 
 	}
 
 	@Override
-	public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_, ChunkAccess p_223053_) {
+	public void buildSurface(WorldGenRegion p_223050_, StructureFeatureManager p_223051_, ChunkAccess p_223053_) {
 
 	}
 
 	@Override
-	public void createStructures(RegistryAccess p_223165_, RandomState p_223166_, StructureManager p_223167_, ChunkAccess p_223168_, StructureTemplateManager p_223169_, long p_223170_) {
+	public void createStructures(RegistryAccess p_223165_, StructureFeatureManager p_223167_, ChunkAccess p_223168_, StructureManager p_223169_, long p_223170_) {
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public abstract class EmptyChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void applyBiomeDecoration(WorldGenLevel p_223087_, ChunkAccess p_223088_, StructureManager p_223089_) {
+	public void applyBiomeDecoration(WorldGenLevel p_223087_, ChunkAccess p_223088_, StructureFeatureManager p_223089_) {
 	}
 
 }

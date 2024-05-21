@@ -13,7 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +59,7 @@ public class OverlayManager {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public ScreenRenderer getRenderer(ForgeGui gui, PoseStack stack) {
+	public ScreenRenderer getRenderer(ForgeIngameGui gui, PoseStack stack) {
 		check();
 		return new ScreenRenderer(gui, stack);
 	}
@@ -77,7 +77,7 @@ public class OverlayManager {
 	private void load() {
 		JsonObject jo = Wrappers.get(() -> GsonHelper.parse(new InputStreamReader(Minecraft.getInstance().getResourceManager().getResource(
 				new ResourceLocation(coords.getNamespace(), "textures/gui/overlays/" + coords.getPath() + ".json")
-		).get().open(), StandardCharsets.UTF_8)));
+		).getInputStream(), StandardCharsets.UTF_8)));
 		JsonCodec.from(jo, OverlayManager.class, this);
 		loaded = true;
 	}
@@ -100,12 +100,12 @@ public class OverlayManager {
 
 		private final int x, y;
 
-		public final ForgeGui gui;
+		public final ForgeIngameGui gui;
 		public final PoseStack stack;
 		public final Entity cameraEntity;
 		public final LocalPlayer localPlayer;
 
-		public ScreenRenderer(ForgeGui gui, PoseStack stack) {
+		public ScreenRenderer(ForgeIngameGui gui, PoseStack stack) {
 			this.gui = gui;
 			this.stack = stack;
 			this.x = gui.screenWidth / 2;

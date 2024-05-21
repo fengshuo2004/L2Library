@@ -7,10 +7,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.function.Supplier;
 
-public class RLClassHandler<R extends Tag, T> extends ClassHandler<R, T> {
+public class RLClassHandler<R extends Tag, T extends IForgeRegistryEntry<T>> extends ClassHandler<R, T> {
 
 	public RLClassHandler(Class<T> cls, Supplier<IForgeRegistry<T>> r) {
 		super(cls, e -> e == null ? JsonNull.INSTANCE : new JsonPrimitive(r.get().getKey(e).toString()),

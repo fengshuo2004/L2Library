@@ -14,16 +14,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 
@@ -36,6 +36,7 @@ public class MazeChunkGenerator extends EmptyChunkGenerator {
 	private static final int CELL_WIDTH = 8, SCALE = 5, HEIGHT = CELL_WIDTH << SCALE;
 	private static final ResourceLocation RL = new ResourceLocation("l2library", "maze_chunkgen");
 	private static final LeafManager MANAGER = new RoomLeafManager();
+	private long seed = 0L;
 
 	private static final FrameConfig BLOCKS = new FrameConfig(
 			Blocks.AIR.defaultBlockState(),
@@ -71,27 +72,38 @@ public class MazeChunkGenerator extends EmptyChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random, StructureManager structures, ChunkAccess access) {
+	public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, StructureFeatureManager structures, ChunkAccess access) {
 		return CompletableFuture.supplyAsync(() -> {
-			InfiniMaze maze = this.maze.get(random.legacyLevelSeed());
+			InfiniMaze maze = this.maze.get(seed);
 			ChunkPos pos = access.getPos();
-			filler.fillChunk(maze, pos, access, random);
+			filler.fillChunk(maze, pos, access);
 			return access;
 		}, executor);
 	}
 
 	@Override
-	public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor height, RandomState random) {
+	public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor height) {
 		return getGenDepth();
 	}
 
 	@Override
-	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor height, RandomState random) {
+	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor height) {
 		BlockState[] states = new BlockState[height.getHeight()];
 		for (int i = 0; i < height.getHeight(); i++) {
 			states[i] = BLOCKS.wall();
 		}
 		return new NoiseColumn(height.getMinBuildHeight(), states);
+	}
+
+	@Override
+	public ChunkGenerator withSeed(long seed) {
+		this.seed = seed;
+		return this;
+	}
+
+	@Override
+	public Climate.Sampler climateSampler() {
+		return Climate.empty();
 	}
 
 }
